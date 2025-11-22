@@ -1,4 +1,4 @@
-package fd.tastqueue;
+package fd.taskqueue;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

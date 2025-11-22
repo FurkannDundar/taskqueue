@@ -1,15 +1,23 @@
-package fd.tastqueue.entity;
+package fd.taskqueue.entity;
 
-import fd.tastqueue.constants.TaskDifficulty;
-import fd.tastqueue.constants.TaskPriority;
-import fd.tastqueue.constants.TaskStatus;
-import fd.tastqueue.constants.TaskType;
+import fd.taskqueue.constants.TaskDifficulty;
+import fd.taskqueue.constants.TaskPriority;
+import fd.taskqueue.constants.TaskStatus;
+import fd.taskqueue.constants.TaskType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="task")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Task {
 
     @Id
@@ -49,4 +57,17 @@ public class Task {
     private LocalDateTime startedAt;
 
     private LocalDateTime completedAt;
+
+    @PrePersist
+    private void onCreate(){
+        if(this.createdAt == null){
+            this.createdAt = LocalDateTime.now();
+        }
+        if(this.taskStatus == null){
+            this.taskStatus = TaskStatus.PENDING;
+        }
+        if(this.retryCount == null){
+            this.retryCount = 0;
+        }
+    }
 }

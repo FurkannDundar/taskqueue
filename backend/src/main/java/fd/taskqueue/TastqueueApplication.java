@@ -1,4 +1,4 @@
-package fd.tastqueue;
+package fd.taskqueue;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

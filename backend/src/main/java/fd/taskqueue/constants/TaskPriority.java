@@ -1,4 +1,4 @@
-package fd.tastqueue.constants;
+package fd.taskqueue.constants;
 
 public enum TaskPriority {
     LOW(3), MEDIUM(2), HIGH(1), CRITICAL(0);

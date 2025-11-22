@@ -1,7 +1,7 @@
-package fd.tastqueue.repository;
+package fd.taskqueue.repository;
 
-import fd.tastqueue.constants.TaskStatus;
-import fd.tastqueue.entity.Task;
+import fd.taskqueue.constants.TaskStatus;
+import fd.taskqueue.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
