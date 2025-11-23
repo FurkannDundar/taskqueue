@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    List<Task> findByStatus(TaskStatus taskStatus);
+    List<Task> findByTaskStatus(TaskStatus taskStatus);
 
-    long countByStatus(TaskStatus taskStatus);
+    long countByTaskStatus(TaskStatus taskStatus);
 }
 
 
