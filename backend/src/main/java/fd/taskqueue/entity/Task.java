@@ -43,9 +43,6 @@ public class Task {
     @Column(nullable = false)
     private Integer maxRetry;
 
-    @Column(length=1000)
-    private String failureReason;
-
     @Column(nullable = false)
     private Integer retryCount;
 

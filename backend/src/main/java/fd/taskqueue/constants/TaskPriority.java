@@ -1,5 +1,8 @@
 package fd.taskqueue.constants;
 
+import lombok.Getter;
+
+@Getter
 public enum TaskPriority {
     LOW(3), MEDIUM(2), HIGH(1), CRITICAL(0);
 
@@ -7,9 +10,5 @@ public enum TaskPriority {
 
     TaskPriority(int value) {
         this.value = value;
-    }
-
-    public int getValue() {
-        return value;
     }
 }

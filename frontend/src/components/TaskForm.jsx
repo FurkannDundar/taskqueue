@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TaskPicker from "./TastPicker";
 import axiosInstance from "../api/apiClient";
+import PriorityPicker from "./PriorityPicker";
 function TaskForm() {
   const [task, setTask] = useState("");
   const [priority, setPriority] = useState("");
@@ -8,8 +9,13 @@ function TaskForm() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    const obj = { priority, task, maxRetry };
-    axiosInstance.post("/task", obj);
+    const obj = {
+      taskPriority: priority,
+      taskType: task,
+      maxRetry,
+    };
+    console.log(obj);
+    axiosInstance.post("/task/create", obj);
   }
 
   return (
@@ -17,62 +23,7 @@ function TaskForm() {
       <div className="w-[80%] m-auto flex justify-center min-h-screen items-center">
         <form className="border-4 p-6 w-[70%]" onSubmit={handleSubmit}>
           <TaskPicker task={task} setTask={setTask} />
-          <div className="flex justify-center align-middle">
-            <div className=" flex items-center">Pick the priority</div>
-            <div className="p-3 ml-4">
-              <label>
-                <input
-                  type="checkbox"
-                  name="priority"
-                  value="Low"
-                  className="mr-3"
-                  checked={priority === "Low"}
-                  onChange={() => {
-                    setPriority("Low");
-                  }}
-                />
-                Low
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="priority"
-                  value="Medium"
-                  className="mr-3"
-                  checked={priority === "Medium"}
-                  onChange={() => {
-                    setPriority("Medium");
-                  }}
-                />
-                Medium
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="priority"
-                  value="High"
-                  className="mr-3"
-                  checked={priority === "High"}
-                  onChange={() => {
-                    setPriority("High");
-                  }}
-                />
-                High
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="priority"
-                  value="Critical"
-                  checked={priority === "Critical"}
-                  onChange={() => {
-                    setPriority("Critical");
-                  }}
-                />
-                Critical
-              </label>
-            </div>
-          </div>
+          <PriorityPicker priority={priority} setPriority={setPriority} />
           <div className="flex justify-center">
             <label>Max Retry</label>
             <select
