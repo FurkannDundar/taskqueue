@@ -1,5 +1,6 @@
 package fd.taskqueue.queue;
 
+import fd.taskqueue.constants.TaskStatus;
 import fd.taskqueue.entity.Task;
 import fd.taskqueue.repository.TaskRepository;
 import fd.taskqueue.service.TaskService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Slf4j
@@ -32,7 +34,17 @@ public class TaskRunner implements Runnable{
     @Override
     public void run() {
         try{
+
             log.info("İşleniyor... TaskID: {}", task.getId());
+
+            Task taskObj = taskRepository.findById(task.getId())
+                    .orElseThrow(() -> new RuntimeException("Task bulunamadı"));
+            taskObj.setStartedAt(LocalDateTime.now());
+            taskObj.setTaskStatus(TaskStatus.IN_PROGRESS);
+            taskRepository.save(taskObj);
+
+            int retry = task.getRetryCount();
+            task.setRetryCount(retry + 1);
 
             int durationMs = task.getTaskDifficulty().getDurationMs();
 
@@ -49,6 +61,10 @@ public class TaskRunner implements Runnable{
             }
 
             log.info("TaskID: {} işlendi", task.getId());
+
+            taskObj.setTaskStatus(TaskStatus.COMPLETED);
+            taskObj.setCompletedAt(LocalDateTime.now());
+            taskRepository.save(taskObj);
         }catch (Exception e){
             e.printStackTrace();
         }

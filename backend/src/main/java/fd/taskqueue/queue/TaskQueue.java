@@ -2,8 +2,10 @@ package fd.taskqueue.queue;
 
 import fd.taskqueue.constants.TaskStatus;
 import fd.taskqueue.entity.Task;
+import fd.taskqueue.exception.NoTaskFoundException;
 import fd.taskqueue.pool.WorkerPool;
 import fd.taskqueue.repository.TaskRepository;
+import fd.taskqueue.service.TaskService;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class TaskQueue {
     private final WorkerPool workerPool;
 
     private PriorityBlockingQueue<Task> taskQueue;
+    private TaskService taskService;
 
     @Value("${taskqueue.engine-capacity}")
     private int queueCapacity;
@@ -41,9 +44,17 @@ public class TaskQueue {
     }
 
     public void addTaskToQueue(Task newTask){
-        log.info("TaskID: {} TaskQueue'ya ekleniyor.", newTask.getId());
+
         Task task = taskRepository.findById(newTask.getId())
-                .orElseThrow(() -> new RuntimeException("Task bulunamadı"));
+                .orElseThrow(() -> new NoTaskFoundException("Task Bulunamadı"));
+
+        if(task.getRetryCount() >= task.getMaxRetry()){
+            taskService.terminateTaskFailure(task);
+            return;
+        }
+
+        log.info("TaskID: {} TaskQueue'ya ekleniyor.", newTask.getId());
+
         task.setTaskStatus(TaskStatus.QUEUED);
         taskRepository.save(task);
         taskQueue.add(task);

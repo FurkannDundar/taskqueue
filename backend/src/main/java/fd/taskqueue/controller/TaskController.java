@@ -29,7 +29,6 @@ public class TaskController {
 
         log.info("Task Created. TaskID: {}", task.getId());
 
-        // Queue'nun dolu olma durumu kontrol edilecek
         taskQueue.addTaskToQueue(task);
     }
 }
