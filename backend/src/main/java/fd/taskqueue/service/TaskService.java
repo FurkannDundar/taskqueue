@@ -32,30 +32,37 @@ public class TaskService {
     }
 
     public void failTask(Task task){
-        log.info("****FAILURE******");
-        log.info("TaskID: {} Başarısız Oldu\n\n", task.getId());
-
-
-        Task taskObj = taskRepository.findById(task.getId())
-                .orElseThrow(() -> new RuntimeException("Task bulunamadı"));
-        taskObj.setTaskStatus(TaskStatus.PENDING);
-        int retryCount = taskObj.getRetryCount();
-        taskObj.setRetryCount(retryCount + 1);
-        taskRepository.save(taskObj);
-
-        log.info("TaskID: {} Tekrar TaskQueue'ya Ekleniyor\n\n", task.getId());
-        taskQueue.addTaskToQueue(taskObj);
-    }
-
-    public void terminateTaskFailure(Task task){
-        log.info("****TERMINATED******");
-        log.info("TaskID: {} Başarısız Oldu", task.getId());
-        log.info("Task Retry: {}, TaskMaxRetry: {}\n\n", task.getRetryCount(), task.getMaxRetry());
-
         Task taskObj = taskRepository.findById(task.getId())
                 .orElseThrow(() -> new NoTaskFoundException("Task Bulunamadı"));
-        taskObj.setTaskStatus(TaskStatus.FAILED);
+
+
+        int retryCount = taskObj.getRetryCount();
+        taskObj.setRetryCount(retryCount + 1);
+
+        if(taskObj.getRetryCount() >= taskObj.getMaxRetry()){
+            log.error("Task-{} TaskType-{} TaskDifficulty-{} TaskPriority-{} " +
+                    "başarısız oldu, artık çalıştırılmayacak",
+                    taskObj.getId(), taskObj.getTaskType(),
+                    taskObj.getTaskDifficulty(), taskObj.getTaskPriority());
+            taskObj.setTaskStatus(TaskStatus.FAILED);
+            taskObj.setCompletedAt(LocalDateTime.now());
+            taskRepository.save(taskObj);
+            return;
+        }
+        log.error("Task-{} tekrar queue'ya ekleniyor...", taskObj.getId());
+
+        taskObj.setTaskStatus(TaskStatus.QUEUED);
+        taskQueue.addTaskToQueue(taskObj);
+
+        taskRepository.save(taskObj);
+    }
+
+    public void completeTask(Task task){
+        Task taskObj = taskRepository.findById(task.getId())
+                .orElseThrow(() -> new NoTaskFoundException("Task Bulunamadı"));
+        log.info("Task-{} başarıyla tamamlandı...", taskObj.getId());
         taskObj.setCompletedAt(LocalDateTime.now());
+        taskObj.setTaskStatus(TaskStatus.COMPLETED);
         taskRepository.save(taskObj);
     }
 }

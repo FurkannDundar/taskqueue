@@ -13,15 +13,15 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="task")
-@Data
+@Table(name="tasks")
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
+public class Task{
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -41,30 +41,24 @@ public class Task {
     private TaskPriority taskPriority;
 
     @Column(nullable = false)
-    private Integer maxRetry;
+    private int retryCount;
 
     @Column(nullable = false)
-    private Integer retryCount;
+    private int maxRetry;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    private LocalDateTime scheduledFor;
-
     private LocalDateTime startedAt;
+
+    private LocalDateTime scheduledFor;
 
     private LocalDateTime completedAt;
 
     @PrePersist
     private void onCreate(){
-        if(this.createdAt == null){
-            this.createdAt = LocalDateTime.now();
-        }
-        if(this.taskStatus == null){
-            this.taskStatus = TaskStatus.PENDING;
-        }
-        if(this.retryCount == null){
-            this.retryCount = 0;
-        }
+        this.createdAt = LocalDateTime.now();
+        this.taskStatus = TaskStatus.PENDING;
+        this.retryCount = 0;
     }
 }

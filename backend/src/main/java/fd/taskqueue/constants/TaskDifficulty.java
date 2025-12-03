@@ -2,18 +2,27 @@ package fd.taskqueue.constants;
 
 import lombok.Getter;
 
+import java.util.Random;
+
 @Getter
 public enum TaskDifficulty {
-    EASY(2, 10000),
-    MEDIUM(5, 20000 ),
-    HARD(10, 30000),
-    EXTREME(50, 50000);
+    EASY(10, 5000),
+    MEDIUM(15, 10000 ),
+    HARD(30, 15000),
+    EXTREME(50, 20000);
 
-    private Integer failureRate;
-    private Integer durationMs;
+    private final Integer failureRate;
+    private final Integer durationMs;
 
     TaskDifficulty(Integer failureRate, Integer durationMs) {
         this.failureRate = failureRate;
         this.durationMs = durationMs;
+    }
+
+    public boolean willFail(){
+        Random random = new Random();
+        int randomValue = random.nextInt(100);
+
+        return randomValue < failureRate;
     }
 }
