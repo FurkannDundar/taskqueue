@@ -1,21 +1,24 @@
 function PriorityPicker({ priority, setPriority }) {
   return (
-    <div className="flex items-center justify-center gap-4 p-6">
-      <label className="text-lg font-semibold text-gray-700">
-        Pick the Priority
+    <div className="space-y-3">
+      <label className="block text-sm font-semibold text-gray-700">
+        Öncelik Durumu
       </label>
       <select
         value={priority}
         onChange={(event) => setPriority(event.target.value)}
-        className="px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer hover:border-gray-400 min-w-[200px]"
+        className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg shadow-sm
+                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                   hover:border-gray-400 transition-all cursor-pointer
+                   text-gray-700 font-medium"
       >
         <option value="" disabled>
           Select priority...
         </option>
-        <option value="LOW">🟢 Low</option>
-        <option value="MEDIUM">🟡 Medium</option>
-        <option value="HIGH">🟠 High</option>
         <option value="CRITICAL">🔴 Critical</option>
+        <option value="HIGH">🟠 High</option>
+        <option value="MEDIUM">🟡 Medium</option>
+        <option value="LOW">🟢 Low</option>
       </select>
     </div>
   );
